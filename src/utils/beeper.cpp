@@ -40,11 +40,11 @@ void BeepTask(void *pvParameters) {
 }
 
 void Beep(const std::vector<uint32_t>& time) {
-  if(!beepActive) {
-    beepTones = time;
-    beepActive = true;
-    xTaskCreate(&BeepTask, "beep_task", 2000, NULL, 10, &beep_task);
-  }
+  // if(!beepActive) {
+  //   beepTones = time;
+  //   beepActive = true;
+  //   xTaskCreate(&BeepTask, "beep_task", 2000, NULL, 10, &beep_task);
+  // }
 }
 
 void StartBeep() {

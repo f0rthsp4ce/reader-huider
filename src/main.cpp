@@ -29,7 +29,7 @@ std::vector<uint32_t> kStartupBeeps{200, 100, 200};
 
 void setup() {
   InitDebug();
-  InitBeeper();
+  // InitBeeper();
   InitLED();
 
   bool okNFC = InitNFC();
@@ -37,19 +37,22 @@ void setup() {
   InitMQTT();
   InitArduinoOTA();
   InitOutput();
-  InitDial(DIAL_INT, DIAL_PULSE);
+  // InitDial(DIAL_INT, DIAL_PULSE);
 
   StartWiFi();
   StartNFC();
   StartLED();
 
-  if(okNFC) {
-    DEBUG_PRINT("NFC OK\n");
-    BlueLEDRing();
-  } else {
-    DEBUG_PRINT("NFC fail\n");
-    ErrorPermanentLED();
-  }
+  // if(okNFC) {
+  //   DEBUG_PRINT("NFC OK\n");
+  //   BlueLEDRing();
+  // } else {
+  //   DEBUG_PRINT("NFC fail\n");
+  //   ErrorPermanentLED();
+  // }
 }
 
-void loop() {}
+void loop() {
+  Serial.println("No tag");
+  vTaskDelay(pdMS_TO_TICKS(1000));
+  }

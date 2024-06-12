@@ -32,14 +32,14 @@ void HexDump(const char* preamble, const std::vector<uint8_t>& data) {
   for (auto byte : data) {
     DEBUG_PRINT("%02x", byte);
   }
-  DEBUG_PRINT("\n");
+  DEBUG_PRINT("\r\n");
 }
 
 
 bool InitNFC() {
   if (!nfc.Init()) {
     //StartBeep();
-    DEBUG_PRINT("PN532 Connection Failed\n");
+    DEBUG_PRINT("PN532 Connection Failed\r\n");
     fault = true;
   }
   return true;
@@ -103,37 +103,37 @@ bool EMVGetAID(std::vector<uint8_t>& aid) {
 
   Parser tlv_parser(ber);
   if (tlv_parser.IsNull()) {
-    DEBUG_PRINT("Failed tlv\n");
+    DEBUG_PRINT("Failed tlv\r\n");
     return false;
   }
 
   Parser fci_parser = tlv_parser.GetObject(0x6F);
   if (fci_parser.IsNull()) {
-    DEBUG_PRINT("Failed 0x6F\n");
+    DEBUG_PRINT("Failed 0x6F\r\n");
     return false;
   }
 
   Parser fci_prop_template = fci_parser.GetObject(0xA5);
   if (fci_prop_template.IsNull()) {
-    DEBUG_PRINT("Failed 0xA5\n");
+    DEBUG_PRINT("Failed 0xA5\r\n");
     return false;
   }
 
   Parser fci_issuer_table = fci_prop_template.GetObject(0xBF0C);
   if (fci_issuer_table.IsNull()) {
-    DEBUG_PRINT("Failed 0xBF0C\n");
+    DEBUG_PRINT("Failed 0xBF0C\r\n");
     return false;
   }
 
   Parser app_template = fci_issuer_table.GetObject(0x61);
   if (app_template.IsNull()) {
-    DEBUG_PRINT("Failed 0x61\n");
+    DEBUG_PRINT("Failed 0x61\r\n");
     return false;
   }
 
   Parser aid_data = app_template.GetObject(0x4F);
   if (aid_data.IsNull()) {
-    DEBUG_PRINT("Failed 0x4F\n");
+    DEBUG_PRINT("Failed 0x4F\r\n");
     return false;
   }
 
@@ -202,13 +202,13 @@ bool EMVGetPanFromData(const std::vector<uint8_t>& data,
                        std::vector<uint8_t>& pan) {
   Parser tlv_parser(data);
   if (tlv_parser.IsNull()) {
-    DEBUG_PRINT("Failed tlv\n");
+    DEBUG_PRINT("Failed tlv\r\n");
     return false;
   }
 
   for (const auto& path : kPanPaths) {
     Parser current_parser = tlv_parser;
-    DEBUG_PRINT("Testing path on %d\n", tlv_parser.GetData().size());
+    DEBUG_PRINT("Testing path on %d\r\n", tlv_parser.GetData().size());
     for (auto tag : path.tags) {
       current_parser = current_parser.GetObject(tag);
       DEBUG_PRINT("%x -> ", tag);
@@ -217,7 +217,7 @@ bool EMVGetPanFromData(const std::vector<uint8_t>& data,
         break;
       }
     }
-    DEBUG_PRINT("\n");
+    DEBUG_PRINT("\r\n");
 
     if (current_parser.IsNull()) {
       continue;
@@ -262,7 +262,7 @@ bool EMVGetPanFromData(const std::vector<uint8_t>& data,
       }
       return true;
     } else {
-      DEBUG_PRINT("Luhn failed\n");
+      DEBUG_PRINT("Luhn failed\r\n");
     }
   }
 
@@ -273,19 +273,19 @@ bool EMVGetPDOL(const std::vector<uint8_t>& pdol_answer,
                 std::vector<uint8_t>& pdol) {
   Parser tlv_parser(pdol_answer);
   if (tlv_parser.IsNull()) {
-    DEBUG_PRINT("Failed tlv\n");
+    DEBUG_PRINT("Failed tlv\r\n");
     return false;
   }
 
   Parser fci_parser = tlv_parser.GetObject(0x6F);
   if (fci_parser.IsNull()) {
-    DEBUG_PRINT("Failed 0x6F\n");
+    DEBUG_PRINT("Failed 0x6F\r\n");
     return false;
   }
 
   Parser fci_prop_template = fci_parser.GetObject(0xA5);
   if (fci_prop_template.IsNull()) {
-    DEBUG_PRINT("Failed 0xA5\n");
+    DEBUG_PRINT("Failed 0xA5\r\n");
     return false;
   }
 
@@ -340,7 +340,7 @@ bool EMVGenerateFakePDOL(const std::vector<uint8_t>& pdol_in,
     for (const auto& fixed_value : kFixedPdolValues) {
       if (fixed_value.tag == tag && fixed_value.data.size() == length) {
         found = true;
-        DEBUG_PRINT("Found tag %04x with length %d\n", tag, length);
+        DEBUG_PRINT("Found tag %04x with length %d\r\n", tag, length);
         pdol_out.insert(pdol_out.end(), fixed_value.data.begin(),
                         fixed_value.data.end());
         break;
@@ -348,7 +348,7 @@ bool EMVGenerateFakePDOL(const std::vector<uint8_t>& pdol_in,
     }
 
     if (!found) {
-      DEBUG_PRINT("Not found tag %04x with length %d\n", tag, length);
+      DEBUG_PRINT("Not found tag %04x with length %d\r\n", tag, length);
       pdol_out.resize(pdol_out.size() + length);
     }
   }
@@ -466,7 +466,7 @@ uint8_t ReadEMVCoPAN(std::vector<uint8_t>& pan) {
 
   std::vector<uint8_t> pdol_out;
   if (!EMVGenerateFakePDOL(pdol, pdol_out)) {
-    DEBUG_PRINT("Failed to generate fake PDOL\n");
+    DEBUG_PRINT("Failed to generate fake PDOL\r\n");
     return EMVCO_READ_FAIL;
   }
 
@@ -509,14 +509,14 @@ std::vector<uint32_t> kEmvBeeps{4000, 50, 0, 75, 4000, 50};
 std::vector<uint32_t> kFailBeeps{1000, 200, 0, 200, 1000, 200};
 
 int8_t CheckNfcChip() {
-  //DEBUG_PRINT("checking NFC chip...\n");
+  //DEBUG_PRINT("checking NFC chip...\r\n");
   uint32_t version;
 
   if(nfc.GetFirmwareVersion(version)) {
     if(version != 0) {
       if (nfc.SetPassiveActivationRetries(0)){
         if(nfc.SAMConfigure()) {
-          //DEBUG_PRINT("NFC is OK\n");
+          //DEBUG_PRINT("NFC is OK\r\n");
           if (reinitNfcTries > 10)
             PublishToMQTT("status", "NFC OK");
             if(fault) {
@@ -531,14 +531,14 @@ int8_t CheckNfcChip() {
   }
 
 
-  DEBUG_PRINT("NFC reconfig error, resetting chip..\n");
+  DEBUG_PRINT("NFC reconfig error, resetting chip..\r\n");
   if(nfc.Init()) {
-    DEBUG_PRINT("NFC re-init ok\n");
+    DEBUG_PRINT("NFC re-init ok\r\n");
     if(nfc.GetFirmwareVersion(version)) {
       if(version != 0) {
         if (nfc.SetPassiveActivationRetries(0)){
           if(nfc.SAMConfigure()) {
-            DEBUG_PRINT("NFC config is OK\n");
+            DEBUG_PRINT("NFC config is OK\r\n");
             PublishToMQTT("status", "NFC OK");
             if(fault) {
               fault = false;
@@ -572,7 +572,7 @@ int8_t CheckNfcChip() {
 }
 
 void HandleNFC() {
-  DEBUG_PRINT("NFC started on core %d\n", xPortGetCoreID());
+  DEBUG_PRINT("NFC started on core %d\r\n", xPortGetCoreID());
   uint32_t tryNfcTimes = 0;
 
   std::vector<uint8_t> old_uid;
@@ -594,12 +594,12 @@ void HandleNFC() {
 
     switch (read_status) {
       case RFID_READ_NO_TAG: // TODO: Fix no tag
-        //DEBUG_PRINT("No tag\n");
+        //DEBUG_PRINT("No tag\r\n");
         //StopLEDRing();
         old_uid.clear();
         break;
       case RFID_READ_TIMED_OUT:
-        DEBUG_PRINT("Timed out\n");
+        DEBUG_PRINT("Timed out\r\n");
         StopLEDRing();
         old_uid.clear();
         break;
@@ -635,7 +635,7 @@ void HandleNFC() {
           //StopBeep();
           //Beep(kSuccessBeeps);
         } else {
-          DEBUG_PRINT("Failed to EMV\n");
+          DEBUG_PRINT("Failed to EMV\r\n");
           ErrorLED();
           //Beep(kFailBeeps);
           //StopBeep();
