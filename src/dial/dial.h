@@ -3,8 +3,8 @@
 
 void InitDial(int interrupt, int pulse);
 
-void pincode_handler_task(void *pvParameters);
+void pincode_handler_task(void* pvParameters);
 
-void dial_task(void *pvParameters);
+void dial_task(void* pvParameters);
 
 #endif

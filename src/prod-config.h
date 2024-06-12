@@ -1,15 +1,15 @@
-#pragma once 
+#pragma once
 
-#include "secrets.h"
 #include "config.h"
+#include "secrets.h"
 
 // Debug
 //#define DEBUG_ENABLED
 
 //LED
-#define NUM_LEDS    7
+#define NUM_LEDS 7
 #define FIRST_LED 1
-#define BRIGHTNESS  255
+#define BRIGHTNESS 255
 
 // WiFi
 #define OTA_HOSTNAME "acs-reader"
@@ -20,4 +20,3 @@
 #define MQTT_HOST "hass.lan"
 #define MQTT_USERNAME "acs-reader"
 #define MQTT_TOPIC "acs"
-

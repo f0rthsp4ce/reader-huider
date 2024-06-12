@@ -1,4 +1,4 @@
-#pragma once 
+#pragma once
 
 // PN532 pins
 #define PN532_IRQ 20
@@ -14,17 +14,16 @@
 #define OUTPUT_SERIAL_SPEED 115200
 
 // Dial pins
-#define DIAL_INT           1
-#define DIAL_PULSE         2
+#define DIAL_INT 1
+#define DIAL_PULSE 2
 
 // Beeper
 #define BEEPER 19
 
 // LED
-#define LED_DATA_PIN  12
-#define LED_TYPE    WS2812B
+#define LED_DATA_PIN 12
+#define LED_TYPE WS2812B
 #define COLOR_ORDER GRB
-
 
 // WiFi
 #define WIFI_SSID "betman"

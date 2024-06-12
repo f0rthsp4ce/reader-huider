@@ -1,58 +1,58 @@
 #include <Arduino.h>
 
+#include <memory>
 #include "arduino_ota.h"
+#include "dial/dial.h"
 #include "esp_wifi.h"
+#include "http_server.h"
+#include "mqtt.h"
 #include "nfc/handler.h"
+#include "nfc/interface/pn532.h"
 #include "utils/beeper.h"
 #include "utils/debug.h"
-#include "utils/output.h"
 #include "utils/led.h"
-#include "dial/dial.h"
-#include "mqtt.h"
-#include "nfc/interface/pn532.h"
-#include <memory>
-
+#include "utils/output.h"
 
 TaskHandle_t nfc_task;
 
 void MainNFCTask(void*) {
-  HandleNFC();
+    HandleNFC();
 }
 
 void StartNFC() {
-  xTaskCreatePinnedToCore(MainNFCTask, "nfc_task", 10000, nullptr, 10,
-                          &nfc_task, 1);
+    xTaskCreatePinnedToCore(MainNFCTask, "nfc_task", 10000, nullptr, 10,
+                            &nfc_task, 1);
 }
 
 std::vector<uint32_t> kStartupBeeps{200, 100, 200};
 
-
 void setup() {
-  InitDebug();
-  // InitBeeper();
-  InitLED();
+    InitDebug();
+    // InitBeeper();
+    InitLED();
 
-  bool okNFC = InitNFC();
-  InitWiFi();
-  InitMQTT();
-  InitArduinoOTA();
-  InitOutput();
-  // InitDial(DIAL_INT, DIAL_PULSE);
+    bool okNFC = InitNFC();
+    InitWiFi();
+    InitMQTT();
+    InitArduinoOTA();
+    InitOutput();
+    // InitDial(DIAL_INT, DIAL_PULSE);
 
-  StartWiFi();
-  StartNFC();
-  StartLED();
+    StartWiFi();
+    StartNFC();
+    StartLED();
+    InitHttpServer();
 
-  // if(okNFC) {
-  //   DEBUG_PRINT("NFC OK\n");
-  //   BlueLEDRing();
-  // } else {
-  //   DEBUG_PRINT("NFC fail\n");
-  //   ErrorPermanentLED();
-  // }
+    // if(okNFC) {
+    //   DEBUG_PRINT("NFC OK\n");
+    //   BlueLEDRing();
+    // } else {
+    //   DEBUG_PRINT("NFC fail\n");
+    //   ErrorPermanentLED();
+    // }
 }
 
 void loop() {
-  Serial.println("No tag");
-  vTaskDelay(pdMS_TO_TICKS(1000));
-  }
+    Serial.println("No tag");
+    vTaskDelay(pdMS_TO_TICKS(1000));
+}
