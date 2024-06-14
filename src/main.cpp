@@ -29,7 +29,7 @@ std::vector<uint32_t> kStartupBeeps{200, 100, 200};
 void setup() {
     InitDebug();
     // InitBeeper();
-    InitLED();
+    // InitLED();
 
     bool okNFC = InitNFC();
     InitWiFi();
@@ -39,8 +39,8 @@ void setup() {
     // InitDial(DIAL_INT, DIAL_PULSE);
 
     StartWiFi();
-    StartNFC();
-    StartLED();
+    // StartNFC();
+    // StartLED();
     InitHttpServer();
 
     // if(okNFC) {
@@ -52,7 +52,4 @@ void setup() {
     // }
 }
 
-void loop() {
-    Serial.println("No tag");
-    vTaskDelay(pdMS_TO_TICKS(1000));
-}
+void loop() {}
