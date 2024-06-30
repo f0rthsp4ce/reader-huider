@@ -275,11 +275,13 @@ bool PN532::SendCommandData(const std::vector<uint8_t>& data) {
 
 bool PN532::ReadRdy() {
 
-    return (this->wire_.read() & 1) == 1;
+    uint8_t byte = this->wire_.read();
+    Serial.println(byte, HEX);
+    return (byte & 1) == 1;
 }
 
 bool PN532::ReadAck(uint32_t timeout) {
-    if (!this->WaitReady(timeout)) {
+    if (!this->WaitIrq(timeout)) {
         return false;
     }
 
@@ -301,7 +303,7 @@ bool PN532::ReadAck(uint32_t timeout) {
 }
 
 bool PN532::ReadResponse(std::vector<uint8_t>& data, uint32_t timeout) {
-    if (!this->WaitReady(timeout)) {
+    if (!this->WaitIrq(timeout)) {
         return false;
     }
 
@@ -416,7 +418,7 @@ bool PN532::CommandExchange(const std::vector<uint8_t>& in_data,
     return true;
 }
 
-bool PN532::WaitReady(uint32_t timeout) {
+bool PN532::WaitIrq(uint32_t timeout) {
     uint32_t elapsed = 0;
     while (elapsed < timeout) {
         if (digitalRead(this->irq_pin_) == 0) {
@@ -425,7 +427,7 @@ bool PN532::WaitReady(uint32_t timeout) {
         delay(10);
         elapsed += 10;
     }
-    DEBUG_PN532_PRINT("wait rdy timeout\r\n");
+    DEBUG_PN532_PRINT("wait irq timeout\r\n");
     return false;
 }
 
