@@ -274,9 +274,7 @@ bool PN532::SendCommandData(const std::vector<uint8_t>& data) {
 }
 
 bool PN532::ReadRdy() {
-
     uint8_t byte = this->wire_.read();
-    Serial.println(byte, HEX);
     return (byte & 1) == 1;
 }
 
@@ -310,9 +308,10 @@ bool PN532::ReadResponse(std::vector<uint8_t>& data, uint32_t timeout) {
     this->wire_.requestFrom(
         PN532_I2C_ADDRESS,
         static_cast<size_t>(1 + 3 + 2 + 3 + 1 + PN532_MAX_COMMAND_SIZE + 2),
-        true);
+        false);
 
     if (!this->ReadRdy()) {
+        this->wire_.endTransmission();
         DEBUG_PN532_PRINT("read ready failed\r\n");
         return false;
     }

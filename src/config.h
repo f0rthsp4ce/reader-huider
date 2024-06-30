@@ -1,7 +1,7 @@
 #pragma once
 
 // PN532 pins
-#define PN532_IRQ 20
+#define PN532_IRQ 22
 #define PN532_RST 21  // Must be connected to RSTPDN pin, not RSTO!
 #define PN532_SDA 25
 #define PN532_SCL 26
