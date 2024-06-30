@@ -7,9 +7,9 @@
 #include <numeric>
 #include <vector>
 
-#define DEBUG_PN532_PRINT(fmt, ...)                \
-    DEBUG_SERIAL.printf("PN532(L%4d): ", __LINE__) \
-        DEBUG_PRINT(fmt, ##__VA_ARGS__)
+#define DEBUG_PN532_PRINT(fmt, ...)                 \
+    DEBUG_SERIAL.printf("PN532(L%4d): ", __LINE__); \
+    DEBUG_PRINT(fmt, ##__VA_ARGS__)
 
 std::vector<uint8_t> kPN532Ack{0x00, 0x00, 0xFF, 0x00, 0xFF, 0x00};
 
